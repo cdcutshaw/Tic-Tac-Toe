@@ -1,19 +1,24 @@
 //factory function that creates the gameboard object
 function Gameboard () {
 
-    const board = [
-        null, null, null,
-        null, null, null,
-        null, null, null
+    let board = [
+        '', '', '',
+        '', '', '',
+        '', '', ''
     ];
 
+    const resetBoard = () => board = [
+        '', '', '',
+        '', '', '',
+        '', '', ''
+    ];
    
-   //method to get board that UI will eventually render
+  
     const getBoard = () => board;
 
     
     const placeToken = (selectedCell, playerID) => {
-        if (board[selectedCell] === null) {
+        if (board[selectedCell] === '') {
             board[selectedCell] = playerID;
         }
         else {
@@ -21,10 +26,62 @@ function Gameboard () {
         }
     }
 
-    placeToken(8, "x")
-    placeToken(8, "0")
-    console.log(board)
-    return (getBoard, placeToken)
+    const printBoard = () => {
+        const boardWithCellValues = board.map((cell) => cell);
+        console.log(boardWithCellValues);
+    }
+
+    return {resetBoard, getBoard, placeToken, printBoard};
+};
+
+function GameController ( 
+    playerOneName = "player One", 
+    playerTwoName = "player Two"
+) {
+    const board = Gameboard();
+
+    const players = [
+        {
+            name: playerOneName,
+            playerID: 'X'
+        },
+        {
+            name: playerTwoName,
+            playerID: 'O'
+        }
+    ];
+
+    let activePlayer = players[0];
+
+    const switchPlayerTurn = () => {
+        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    };
+    const getActivePlayer = () => activePlayer;
+
+    const printNewRound = () => {
+        board.printBoard();
+        console.log(`${getActivePlayer().name}'s turn.`);
+      };
+    
+      const playRound = (selectedCell) => {
+        console.log(
+            `Placing ${getActivePlayer().name}'s marker into cell ${selectedCell}...`
+        );
+        board.placeToken(selectedCell, getActivePlayer().playerID);
+
+        switchPlayerTurn();
+        printNewRound();
+      };
+printNewRound();
+
+console.log(playRound(2));
+console.log(playRound(1));
+console.log(playRound(0));
+
+return {playRound, getActivePlayer};
+
 }
 
-Gameboard();
+const game = GameController();
+
+
