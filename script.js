@@ -17,6 +17,7 @@ function Gameboard () {
     const getBoard = () => board;
 
     const winCheck = () => {
+        
         if ((board[0] !== null && board[0] === board[1] && board[1] === board[2])
             || (board[3] !== null && board[3] === board[4] && board[4] === board[5])
             || (board[6] !== null && board[6] === board[7] && board[7] === board[8])
@@ -25,11 +26,19 @@ function Gameboard () {
             || (board[2] !== null && board[2] === board[5] && board[5] === board[8])
             || (board[0] !== null && board[0] === board[4] && board[4] === board[8])
             || (board[2] !== null && board[2] === board[4] && board[4] === board[6])) {
-            return true;
-            
+            return true;   
         } 
         else {
             return false;
+        }
+    }
+
+    const tieCheck = () => {
+        if (board.includes(null)){
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
@@ -47,7 +56,7 @@ function Gameboard () {
         console.log(boardWithCellValues);
     }
 
-    return {resetBoard, getBoard, winCheck, placeToken, printBoard};
+    return {resetBoard, getBoard, winCheck, tieCheck, placeToken, printBoard};
 };
 
 
@@ -82,35 +91,51 @@ function GameController (
         console.log(`${getActivePlayer().name}'s turn.`);
       };
 
-    const checkForWin = () => {
-        board.winCheck();
-        if (true){
-            console.log(`we have a winner`)
-        }
-
+    const gameOver = () => {
+        console.log(`game over!`);
+        board.resetBoard ();
     }
+
+    const checkForTie = () => {
+        return board.tieCheck();
+    }
+
+    const checkForWin = () => {
+        
+        if (board.winCheck() === true) {
+            board.printBoard();
+            console.log(`winner: ${getActivePlayer().name}`)
+            gameOver();
+        }
+        else if (checkForTie() === true) {
+            board.printBoard();
+            console.log (`tie`)
+            gameOver();
+        } 
+   }
     
     const playRound = (selectedCell) => {
     console.log(`Placing ${getActivePlayer().name}'s marker into cell ${selectedCell}...` );
     board.placeToken(selectedCell, getActivePlayer().playerID);
-       
         checkForWin();
-
         switchPlayerTurn();
         printNewRound();
       };
 printNewRound();
 
 console.log(playRound(0));
-console.log(playRound(6));
-console.log(playRound(1));
-console.log(playRound(5));
 console.log(playRound(2));
+console.log(playRound(1));
 console.log(playRound(3));
+console.log(playRound(4));
+console.log(playRound(7));
+console.log(playRound(5));
+console.log(playRound(8));
+console.log(playRound(6));
+console.log(playRound(7));
 
 return {playRound, getActivePlayer};
 
 }
 
 const game = GameController();
-
