@@ -2,15 +2,15 @@
 function Gameboard () {
 
     let board = [
-        null, null, null,
-        null, null, null,
-        null, null, null
+        "", "", "",
+        "", "", "",
+        "", "", ""
     ];
 
     const resetBoard = () => board = [
-        null, null, null,
-        null, null, null,
-        null, null, null
+        "", "", "",
+        "", "", "",
+        "", "", ""
     ];
    
   
@@ -18,14 +18,14 @@ function Gameboard () {
 
     const winCheck = () => {
         
-        if ((board[0] !== null && board[0] === board[1] && board[1] === board[2])
-            || (board[3] !== null && board[3] === board[4] && board[4] === board[5])
-            || (board[6] !== null && board[6] === board[7] && board[7] === board[8])
-            || (board[0] !== null && board[0] === board[3] && board[3] === board[6])
-            || (board[1] !== null && board[1] === board[4] && board[4] === board[7])
-            || (board[2] !== null && board[2] === board[5] && board[5] === board[8])
-            || (board[0] !== null && board[0] === board[4] && board[4] === board[8])
-            || (board[2] !== null && board[2] === board[4] && board[4] === board[6])) {
+        if ((board[0] !== "" && board[0] === board[1] && board[1] === board[2])
+            || (board[3] !== "" && board[3] === board[4] && board[4] === board[5])
+            || (board[6] !== "" && board[6] === board[7] && board[7] === board[8])
+            || (board[0] !== "" && board[0] === board[3] && board[3] === board[6])
+            || (board[1] !== "" && board[1] === board[4] && board[4] === board[7])
+            || (board[2] !== "" && board[2] === board[5] && board[5] === board[8])
+            || (board[0] !== "" && board[0] === board[4] && board[4] === board[8])
+            || (board[2] !== "" && board[2] === board[4] && board[4] === board[6])) {
             return true;   
         } 
         else {
@@ -34,7 +34,7 @@ function Gameboard () {
     }
 
     const tieCheck = () => {
-        if (board.includes(null)){
+        if (board.includes("")){
             return false;
         }
         else {
@@ -43,7 +43,7 @@ function Gameboard () {
     }
 
     const placeToken = (selectedCell, playerID) => {
-        if (board[selectedCell] === null) {
+        if (board[selectedCell] === "") {
             board[selectedCell] = playerID;
         }
         else {
@@ -58,6 +58,8 @@ function Gameboard () {
 
     return {resetBoard, getBoard, winCheck, tieCheck, placeToken, printBoard};
 };
+
+
 
 
 
@@ -92,6 +94,7 @@ function GameController (
       };
 
     const gameOver = () => {
+        board.printBoard();
         console.log(`game over!`);
         board.resetBoard ();
     }
@@ -104,12 +107,12 @@ function GameController (
         
         if (board.winCheck() === true) {
             board.printBoard();
-            console.log(`winner: ${getActivePlayer().name}`)
+            alert(`winner: ${getActivePlayer().name}`)
             gameOver();
         }
         else if (checkForTie() === true) {
             board.printBoard();
-            console.log (`tie`)
+            alert (`tie`)
             gameOver();
         } 
    }
@@ -123,19 +126,49 @@ function GameController (
       };
 printNewRound();
 
-console.log(playRound(0));
-console.log(playRound(2));
-console.log(playRound(1));
-console.log(playRound(3));
-console.log(playRound(4));
-console.log(playRound(7));
-console.log(playRound(5));
-console.log(playRound(8));
-console.log(playRound(6));
-console.log(playRound(7));
 
-return {playRound, getActivePlayer};
-
+return {playRound, getActivePlayer, getBoard: board.getBoard};
 }
 
-const game = GameController();
+
+
+
+
+
+function ScreenController () {
+    const game = GameController();
+    const playerTurnDiv = document.querySelector('.turn');
+    const boardDiv = document.querySelector('.board');
+
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+
+        const board = game.getBoard();
+        const activePlayer = game.getActivePlayer();
+        
+
+        playerTurnDiv.textContent = `${activePlayer.name}'s turn`
+
+        board.forEach(( cell, index) => {
+            const cellBtn = document.createElement("button");
+            cellBtn.classList.add("cell");
+            cellBtn.dataset.cell = index
+            cellBtn.textContent = cell.valueOf();
+            boardDiv.appendChild(cellBtn)
+        })
+    }
+
+    function clickHandlerBoard(e) {
+        const  selectedCell = e.target.dataset.cell;
+        if(!selectedCell) return;
+
+        game.playRound(selectedCell);
+        updateScreen();
+
+    }
+
+    boardDiv.addEventListener("click" , clickHandlerBoard);
+    updateScreen();
+}
+
+ScreenController();

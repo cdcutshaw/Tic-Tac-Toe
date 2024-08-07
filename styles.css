@@ -1,0 +1,22 @@
+* {
+    border: 1px, solid, black;
+}
+
+
+.board {
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 300px;
+    width: 300px;
+}
+
+.cell {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    
+    
+    
+}
