@@ -1,4 +1,3 @@
-//factory function that creates the gameboard object
 function Gameboard () {
 
     let board = [
@@ -13,11 +12,9 @@ function Gameboard () {
         "", "", ""
     ];
    
-  
     const getBoard = () => board;
 
     const winCheck = () => {
-        
         if ((board[0] !== "" && board[0] === board[1] && board[1] === board[2])
             || (board[3] !== "" && board[3] === board[4] && board[4] === board[5])
             || (board[6] !== "" && board[6] === board[7] && board[7] === board[8])
@@ -53,12 +50,10 @@ function Gameboard () {
 
     const printBoard = () => {
         const boardWithCellValues = board.map((cell) => cell);
-        console.log(boardWithCellValues);
     }
 
     return {resetBoard, getBoard, winCheck, tieCheck, placeToken, printBoard};
 };
-
 
 
 
@@ -86,16 +81,14 @@ function GameController (
     const switchPlayerTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
     };
+
     const getActivePlayer = () => activePlayer;
 
     const printNewRound = () => {
         board.printBoard();
-        console.log(`${getActivePlayer().name}'s Turn.`);
-      };
+    };
 
     const gameOver = () => {
-        board.printBoard();
-        console.log(`game over!`);
         board.resetBoard ();
     }
 
@@ -104,31 +97,23 @@ function GameController (
     }
 
     const checkForWin = () => {
-        
         if (board.winCheck() === true) {
-           board.printBoard();
-           return 'win';
-            
+           return 'win';   
         }
         else if (checkForTie() === true) {
-            board.printBoard();
             return 'tie'
         } 
-   }
+    }
     
     const playRound = (selectedCell) => {
-    console.log(`Placing ${getActivePlayer().name}'s marker into cell ${selectedCell}...` );
     board.placeToken(selectedCell, getActivePlayer().playerID);
-        checkForWin();
         switchPlayerTurn();
-        printNewRound();
-      };
-printNewRound();
+    };
 
+printNewRound();
 
 return {playRound, getActivePlayer, getBoard: board.getBoard, checkForWin, gameOver};
 }
-
 
 
 
@@ -140,14 +125,12 @@ function ScreenController () {
     const boardDiv = document.querySelector('.board');
     const restartBtn = document.querySelector('.restart');
 
-
     const win = () => { 
         if (game.checkForWin() === 'win'){
             playerTurnDiv.textContent = `We have a winner! Game Over!`
             game.gameOver();
             boardDiv.removeEventListener("click" , clickHandlerBoard);    
         };
-        
     }
 
     const tie = () => { 
@@ -155,12 +138,8 @@ function ScreenController () {
             playerTurnDiv.textContent = `We have a Tie! Game Over!`
             game.gameOver();
             boardDiv.removeEventListener("click" , clickHandlerBoard);
-
-        };
-        
+        }; 
     }
-
-    
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -168,7 +147,6 @@ function ScreenController () {
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
         
-
         playerTurnDiv.textContent = `${activePlayer.name}'s Turn...`
 
         board.forEach(( cell, index) => {
@@ -184,15 +162,12 @@ function ScreenController () {
         const  selectedCell = e.target.dataset.cell;
         if(!selectedCell) return;
         
-
         game.playRound(selectedCell);
         updateScreen();
         win();
         tie();
     }
-
     
-
     boardDiv.addEventListener("click" , clickHandlerBoard);
     updateScreen();
 
@@ -200,10 +175,7 @@ function ScreenController () {
         game.gameOver();
         updateScreen();
         boardDiv.addEventListener("click" , clickHandlerBoard);
-        updateScreen();
-
-
-    } )
+    })
 }
 
 ScreenController();
